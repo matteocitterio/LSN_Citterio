@@ -1,0 +1,11 @@
+./Solid/inputs/input_1.5.in
+./Solid/inputs/input_1.51.in
+./Solid/inputs/input_1.52.in
+./Solid/inputs/input_1.53.in
+./Solid/inputs/input_1.54.in
+./Solid/inputs/input_1.55.in
+./Solid/inputs/input_1.56.in
+./Solid/inputs/input_1.57.in
+./Solid/inputs/input_1.58.in
+./Solid/inputs/input_1.59.in
+./Solid/inputs/input_1.6.in
