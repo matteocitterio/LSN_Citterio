@@ -1,0 +1,10 @@
+./Gas/inputs/input_0.92.in
+./Gas/inputs/input_0.93.in
+./Gas/inputs/input_0.9400000000000001.in
+./Gas/inputs/input_0.9500000000000001.in
+./Gas/inputs/input_0.9600000000000001.in
+./Gas/inputs/input_0.9700000000000001.in
+./Gas/inputs/input_0.9800000000000001.in
+./Gas/inputs/input_0.9900000000000001.in
+./Gas/inputs/input_1.0.in
+./Gas/inputs/input_1.0100000000000002.in
