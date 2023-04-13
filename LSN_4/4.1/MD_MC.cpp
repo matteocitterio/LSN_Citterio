@@ -374,7 +374,7 @@ void Measure() //Properties measurement
   walker[ik] = kin; // Kinetic energy
   walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
   walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[iw] = walker[it] * rho + 48 / (3 * vol) * press /(double) npart; //pressure
+  walker[iw] = walker[it] * rho + 48 / (3 * vol) * press; //pressure
 
   return;
 }
