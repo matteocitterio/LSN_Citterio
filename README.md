@@ -6,5 +6,5 @@ CC = g++
 CFLAGS = -Wall -O3 -std=c++11
 LIBS = -larmadillo
 ```
-Please make sure this work out with your current configuration. All the docs [here](https://link-url-here.org)
+Please make sure this work out with your current configuration. All the docs [here](https://arma.sourceforge.net/)
  
