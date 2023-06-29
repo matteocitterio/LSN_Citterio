@@ -1,0 +1,19 @@
+1
+10000
+1500
+0.02
+0.02
+0.02
+0.02
+0.9
+8
+
+ ReadInput >> CircleSquare;                  //Put the cities on a circle or on a square
+ ReadInput >> M;                             // Number of chromosomes, i.e. number of initial solutions
+ ReadInput >> NumberOfGenerations;           // Number of generations
+ ReadInput >> probSwapMutation;              // probability of performing a SWAP mutation
+ ReadInput >> probShiftMutation;             // probability of performing a SHIFT mutation
+ ReadInput >> probPermutationMutation;       // probability of performing a PERMUTATION mutation
+ ReadInput >> probInversionMutation;         // probability of performing a INVERSION mutation
+ ReadInput >> probCrossover;                 // probability of performing a CROSSOVER
+ ReadInput >> p;                             // Exponenent of the loaded die
