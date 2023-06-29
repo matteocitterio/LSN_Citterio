@@ -12,10 +12,9 @@ int main(int argc, char *argv[]){
 
     //Settings for the Random generator class
     Random* rnd = new Random();
-    rnd -> RandomRoutine();             //Random settings including seed etc
+    rnd -> RandomRoutine();                     // Random settings including seed etc
 
     //Define all the variables and parameters
-
     ifstream ReadInput;
     int M, NumberOfGenerations, CircleSquare;
     double probSwapMutation, probShiftMutation, probPermutationMutation, probInversionMutation,probCrossover, p;
@@ -42,6 +41,7 @@ int main(int argc, char *argv[]){
     cout << "Number of Generations: " << NumberOfGenerations << endl;
     cout << "Loaded die exponent: " << p << endl;
 
+    // GA constructor
     GeneticAlgorithm *GA = new GeneticAlgorithm(rnd,CircleSquare, NumberOfGenerations, M, probSwapMutation, probShiftMutation, probPermutationMutation, probInversionMutation, probCrossover, p);
 
     cout << "\n\nInitializing population and cities..";
@@ -49,7 +49,6 @@ int main(int argc, char *argv[]){
     cout << " DONE" <<endl;
     
     cout << "Evolve"<<endl;
-    // GA->Test();
     GA->Evolve();
     cout << "DONE"<<endl;
 
