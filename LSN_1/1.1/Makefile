@@ -1,10 +1,9 @@
 CC = g++
-CFLAGS = -Wall -O3 --std=c++11 -I/opt/homebrew/Cellar/armadillo/12.0.1/include
-LDFLAGS = -L/opt/homebrew/Cellar/armadillo/12.0.1/lib
+CFLAGS = -Wall -O3 -std=c++11
 LIBS = -larmadillo
 
 main.exe : main.o random.o funzioni.o
-	$(CC) random.o funzioni.o main.o -o main.exe $(LIBS) $(LDFLAGS)
+	$(CC) random.o funzioni.o main.o -o main.exe $(LIBS) 
 main.o : main.cpp
 	$(CC) -c main.cpp -o main.o $(CFLAGS)
 random.o : random.cpp random.h
