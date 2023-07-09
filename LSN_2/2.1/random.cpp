@@ -74,6 +74,11 @@ double Random :: Rannyu(double min, double max){
 }
 
 double Random ::d_prob(double a, double b, double f_max, Functions *f){
+
+   /*
+   Used for imporatance sampling, it is based over  the accept-reject technique
+   */
+
    double x = Rannyu(a, b);
    double r = Rannyu();
    if (r < ((f->Evaluate(x)) / f_max))

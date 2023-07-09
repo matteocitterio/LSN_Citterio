@@ -41,6 +41,7 @@ public:
   double Exp(double lamda);
   double Lorentz(double mu, double gamma);
   double Theta();
+  // Method used in importance sampling
   double d_prob(double a, double b, double f_max, Functions *f);
 };
 
