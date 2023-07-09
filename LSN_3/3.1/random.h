@@ -11,7 +11,6 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #ifndef __Random__
 #define __Random__
 
-#include "functions.h"
 #include <armadillo>
 
 using namespace arma;
@@ -44,9 +43,6 @@ public:
   double Exp(double lamda);
   double Lorentz(double mu, double gamma);
   double Theta();
-  double d_prob(double a, double b, double f_max, Functions *f);
-  void Step(vec &r);
-  void CStep(vec &r);
 
   };
 

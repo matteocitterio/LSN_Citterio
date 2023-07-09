@@ -2,7 +2,11 @@
 
 double Error(double averages, double squared, int n){
 
-    if (n ==0){
+    /*
+    This computes the blocking average error
+    */
+
+    if (n ==0){                                                     // If it is the first block return 0
         return 0;
     }
 
