@@ -11,10 +11,9 @@ using namespace std;
 
 int main(int argc, char *argv[]){
 
-    //Settings for the Random generator class
-
+    // Initialize an element of the Random class
     Random* rnd = new Random();
-    rnd -> RandomRoutine();   //Random settings including seed etc
+    rnd -> RandomRoutine();                                                 // Random settings including setting the seed, ....
 
     // M thows, N blocks, L throws in each block
     int M = pow(10,4);
@@ -25,7 +24,7 @@ int main(int argc, char *argv[]){
 
     // 2.1.1
 
-    //Build up pointers for Cosine class and Integral class
+    //Build up pointers for Cosine and Integral class
     Cosine *cosine = new Cosine(M_PI * 0.5, M_PI*0.5, 0.);
     Integral *integral = new Integral(0., 1., cosine, rnd);
 
@@ -38,12 +37,12 @@ int main(int argc, char *argv[]){
     double runningSquared = 0.;
     double error = 0.;
 
-    for (int i = 0; i < N; i++){
-        x = integral -> arithAverage(L);
-        runningSum = ((runningSum * i) + x) / (i +1);       //at every iteration I have to re-multiplicate the previous division
+    for (int i = 0; i < N; i++){                                            // Iterate over the number of blocks       
+        x = integral -> arithAverage(L);                                    // Compute the integral with the uniform sampling technique              
+        runningSum = ((runningSum * i) + x) / (i +1);                       // At every iteration I have to re-multiplicate the previous division
         runningSquared = ((runningSquared * i) + pow(x,2))/ (i+1);
-        error = Error(runningSum, runningSquared, i);
-        outputFile << runningSum << " " << error << endl;
+        error = Error(runningSum, runningSquared, i);                       // Compute error
+        outputFile << runningSum << " " << error << endl;                   // I/O managment
     }
 
     outputFile.close();
@@ -61,16 +60,16 @@ int main(int argc, char *argv[]){
     runningSquared = 0.;
     error = 0.;
 
-    for (int i = 0; i < N; i++){
-        x = integral->Imp_sampling(L, 1.5, parabola);
-        runningSum = ((runningSum * i) + x) / (i + 1); // at every iteration I have to re-multiplicate the previous division
+    for (int i = 0; i < N; i++){                                            // Iterate over the number of blocks
+        x = integral->Imp_sampling(L, 1.5, parabola);                       // Compute integral with the importance sampling
+        runningSum = ((runningSum * i) + x) / (i + 1);                      // At every iteration I have to re-multiplicate the previous division
         runningSquared = ((runningSquared * i) + pow(x, 2)) / (i + 1);
-        error = Error(runningSum, runningSquared, i);
-        outputFile << runningSum << " " << error << endl;
+        error = Error(runningSum, runningSquared, i);                       // Compute error
+        outputFile << runningSum << " " << error << endl;                   // I/O managment
     }
 
     outputFile.close();
 
-    rnd->SaveSeed();
+    rnd->SaveSeed();            
     return 0;
 }    
