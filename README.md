@@ -1,6 +1,6 @@
 # LSN
 
-**Plase note** I used `armadillo` a library for linear algebra and scientific computing with high performance standards. In every `Makefile` you may find the following flags:
+**Plase note** that I used `armadillo` a library for linear algebra and scientific computing with high performance standards. In every `Makefile` you may find the following flags:
 ```Makefile
 CC = g++
 CFLAGS = -Wall -O3 -std=c++11
