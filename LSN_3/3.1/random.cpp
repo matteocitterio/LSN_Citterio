@@ -14,7 +14,6 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 #include <cstdlib>
 #include <armadillo>
 #include "random.h"
-#include "functions.h"
 
 using namespace std;
 using namespace arma;
@@ -73,53 +72,6 @@ double Random :: Theta(){
 double Random :: Rannyu(double min, double max){
    // This function generates a random number in the range [min, max]
    return min+(max-min)*Rannyu();
-}
-
-double Random ::d_prob(double a, double b, double f_max, Functions *f){
-   double x = Rannyu(a, b);
-   double r = Rannyu();
-   if (r < ((f->Evaluate(x)) / f_max))
-   {
-      return x;
-   }
-   else
-   {
-      return d_prob(a, b, f_max, f);
-   }
-}
-
-void Random :: Step(vec &r){
-
-   if (r.size() != 3){
-      throw invalid_argument("Input vector must have size 3");
-   }
-
-   int dim = (int) Rannyu(0,3);
-   int s = (int)Rannyu(0, 2) * 2 - 1;
-
-   r[dim] += s;
-
-}
-
-void Random :: CStep (vec &r){
-   if (r.size() != 3){
-      throw invalid_argument("Input vector must have size 3");
-   }
-
-   double x = Gauss(0,1);
-   double y = Gauss(0, 1);
-   double z = Gauss(0, 1);
-
-   double magnitude = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
-
-   x /= magnitude;
-   y /= magnitude;
-   z /= magnitude;
-
-   r[0] += x;
-   r[1] += y;
-   r[2] += z;
-
 }
 
 double Random :: Rannyu(void){
