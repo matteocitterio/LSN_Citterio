@@ -6,4 +6,4 @@
 - To run the GA search with **n** nodes: `mpiexec -np n ./main.exe`.
 - I created a very simple bash script that launches in sequence the program with an increasing number of nodes in order to make performance comparisons.
   To compile `routine.sh`: `chmod +x routine.sh`.
-- To sun `routine.sh`: `./routine.sh`
+- To run `routine.sh`: `./routine.sh`
