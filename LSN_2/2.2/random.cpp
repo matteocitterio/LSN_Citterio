@@ -95,7 +95,7 @@ void Random :: Step(vec &r){
    }
 
    int dim = (int) Rannyu(0,3);
-   int s = (int)Rannyu(0, 2) * 2 - 1;
+   int s = (int)Rannyu(0, 2) * 2 - 1;                             // Due to truncation you need to multiply it back to 2
 
    r[dim] += s;
 
