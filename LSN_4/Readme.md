@@ -1,6 +1,8 @@
 **WARINGING QUANDO HO FATTO EX 7 HO MODIFICATO EX 4 AGGIUNGENDO LE ROBE DELLA GR**
 
-Exercise 4.1 and 4.2 could be found in folder ./4.1/
+## How to use my code
+
+The two exercises are both implemented in the same folder, i.e. `./4.1/`.
 
 - File `MD_MC.cpp` contains all the code necessary for computing pressure as described by the expression in the `.ipynb` file.
 - File `MD_MC.cpp` has been modified to accepts command line arguments that have been used in the `equilibration_routine.sh` routine. Arguments:
