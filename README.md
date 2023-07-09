@@ -1,4 +1,6 @@
-# LSN
+# LSN - Laboratorio di Simulazione Numerica.
+
+## Matteo Citterio
 
 **Plase note** that I used `armadillo` a library for linear algebra and scientific computing with high performance standards. In every `Makefile` you may find the following flags:
 ```Makefile
