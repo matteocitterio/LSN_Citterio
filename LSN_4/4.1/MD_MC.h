@@ -18,15 +18,17 @@ Random rnd;
 
 //parameters, observables
 const int m_props=1000;
-int n_props, iv, ik, it, ie, iw;
+const int n_props = 5;
+int iv, ik, it, ie, iw;
 double vtail, ptail, bin_size, nbins, sd;
 double walker[m_props];
 
 // averages
+const int n_bins = (int)(m_props - n_props);
 double blk_av[m_props], blk_norm, accepted, attempted;
 double glob_av[m_props], glob_av2[m_props];
-double stima_pot, stima_pres, stima_kin, stima_etot, stima_temp;
-double err_pot, err_press, err_kin, err_etot, err_temp, err_gdir;
+double stima_pot, stima_pres, stima_kin, stima_etot, stima_temp, stima_gr;
+double err_pot, err_press, err_kin, err_etot, err_temp;
 
 //configuration
 const int m_part=108;
@@ -36,6 +38,7 @@ double vx[m_part],  vy[m_part],   vz[m_part];
 
 // thermodynamical state
 int npart;
+double deltaV;
 double beta,temp,energy,vol,rho,box,rcut;
 
 // simulation

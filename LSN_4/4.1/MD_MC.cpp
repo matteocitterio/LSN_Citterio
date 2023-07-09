@@ -18,44 +18,63 @@ _/    _/  _/_/_/  _/_/_/_/ email: Davide.Galli@unimi.it
 
 using namespace std;
 
-int main(int argc, char *argv[])
-{
-  //I want to add command line arguments so that the program knows if equilibration is needed and where to write files 
+int main(int argc, char *argv[]){
+
+  /*
+  I want to add command line arguments so that the program knows if equilibration is needed and where to write files
+  */
+
   if (argc != 4){
+
+    // Raise an error if the command lines arguments are wrong
     std::cerr << "Usage: " << argv[0] << " [bool(equilibration)] [Liquid|Solid|Gas] [int fileNumber]" << std::endl;
     return 1;
+
   }
 
-  int equilibration = stoi(argv[1]);
-  string input = argv[2];
-  int file_number = stoi(argv[3]);
+  // Read the command line argurments
+  int equilibration = stoi(argv[1]);                                          // Equilibration argument: 0/1
+  string input = argv[2];                                                     // Phase name (string)
+  int file_number = stoi(argv[3]);                                            // The number of the input file (used in equilibration_routine.sh)
 
-  Input(equilibration, input, file_number); //Inizialization
+  Input(equilibration, input, file_number);                                   // Inizialization & equilibration
   int nconf = 1;
-  for(int iblk=1; iblk <= nblk; iblk++) //Simulation
+  for(int iblk=1; iblk <= nblk; iblk++)                                       // Simulation
   {
-    Reset(iblk);   //Reset block averages
+
+    Reset(iblk);                                                              // Reset block averages
+
     for(int istep=1; istep <= nstep; istep++)
     {
-      Move();
-      Measure();
-      Accumulate(); //Update block averages
+      Move();                                                                 // Evolve the system
+      Measure();                                                              // Measure insteresting quantities
+      Accumulate();                                                           // Update block averages
       if(istep%10 == 0){
-//        ConfXYZ(nconf);//Write actual configuration in XYZ format //Commented to avoid "filesystem full"! 
+//      ConfXYZ(nconf);//Write actual configuration in XYZ format //Commented to avoid "filesystem full"! 
         nconf += 1;
       }
     }
-    Averages(iblk, input, equilibration);   //Print results for current block
+    Averages(iblk, input, equilibration);                                     // Print results for current block in the output file
   }
-  ConfFinal(input); //Write final configuration
+  ConfFinal(input);                                                           // Write final configuration
 
   return 0;
 }
 
 
 void Input(int equilibration, std::string input, int file_number) {
-  ifstream ReadInput, ReadConf, ReadVelocity, Primes, Seed;
 
+  /*
+  Reads and store the input parameters from the `input.in` format-like file. Carries out the needed equilibration as well.
+  Inputs:
+  - int equilibration: bool to control the equilibration routine, wheter it is needed or not
+  - string input: needed to select the right folder for I/O managment
+  - int file_number: if we are running `equilibration.sh` this will select the right `input.in` file with the correct temperature and parameters
+  */
+
+  ifstream ReadInput, ReadConf, ReadVelocity, Primes, Seed;                   // I/O managment files
+
+  // User-friendly messages
   cout << "Classic Lennard-Jones fluid        " << endl;
   cout << "MD(NVE) / MC(NVT) simulation       " << endl << endl;
   cout << "Interatomic potential v(r) = 4 * [(1/r)^12 - (1/r)^6]" << endl << endl;
@@ -68,13 +87,13 @@ void Input(int equilibration, std::string input, int file_number) {
   Primes >> p1 >> p2 ;
   Primes.close();
 
-//Read input informations
-  if (equilibration == 0) ReadInput.open("input.in");   //Equilibration already done
-  else {                                                                // read equilibration input file
-    ifstream infile("./" + input + "/inputs/filenames.txt");            // contains the name of the files
+  // Read input informations
+  if (equilibration == 0) ReadInput.open("input.in");                         // Equilibration already done, go on with the simulation
+  else {                                                                      // Read equilibration input file
+    ifstream infile("./" + input + "/inputs/filenames.txt");                  // Contains the name of the files
     vector<string> filenames;
 
-    if (infile){                                              //read file names
+    if (infile){                                                              // Read file names
       string line;
       while (getline(infile, line)){
         filenames.push_back(line);
@@ -82,12 +101,13 @@ void Input(int equilibration, std::string input, int file_number) {
     }
     infile.close();
 
-    string filename = filenames[file_number - 1];             //name of the inut file needed
+    string filename = filenames[file_number - 1];                             // name of the input file needed
     cout <<"Doing equilibration with: " << filename << endl;
 
-    ReadInput.open(filename);                                 //open the proper file
+    ReadInput.open(filename);                                                 // open the proper file
   }
 
+  // Read input parameters from file
   ReadInput >> iNVET;
   ReadInput >> restart;
 
@@ -115,9 +135,7 @@ void Input(int equilibration, std::string input, int file_number) {
   cout << "Cutoff of the interatomic potential = " << rcut << endl << endl;
     
   ReadInput >> delta;
-
   ReadInput >> nblk;
-
   ReadInput >> nstep;
 
   cout << "The program perform Metropolis moves with uniform translations" << endl;
@@ -126,15 +144,16 @@ void Input(int equilibration, std::string input, int file_number) {
   cout << "Number of steps in one block = " << nstep << endl << endl;
   ReadInput.close();
 
-//Prepare arrays for measurements
-  iv = 0; //Potential energy
-  it = 1; //Temperature
-  ik = 2; //Kinetic energy
-  ie = 3; //Total energy
-  iw = 4; //Pressure
-  n_props = 5; //Number of observables
+  // Prepare arrays for measurements
+  iv = 0;                                                                     // Potential energy
+  it = 1;                                                                     // Temperature
+  ik = 2;                                                                     // Kinetic energy
+  ie = 3;                                                                     // Total energy
+  iw = 4;                                                                     // Pressure
+  //n_props = 5;                                                              // Number of observables, already defined in `*.h` file
 
-//Read initial configuration
+
+  // Read initial configuration
   cout << "Read initial configuration" << endl << endl;
   if(restart)
   {
@@ -142,8 +161,7 @@ void Input(int equilibration, std::string input, int file_number) {
     ReadVelocity.open(input+"/velocity.out");
     for (int i=0; i<npart; ++i) ReadVelocity >> vx[i] >> vy[i] >> vz[i];
   }
-  else 
-  {
+  else {
     ReadConf.open("config.in");
     cout << "Prepare velocities with center of mass velocity equal to zero " << endl;
     double sumv[3] = {0.0, 0.0, 0.0};
@@ -176,6 +194,8 @@ void Input(int equilibration, std::string input, int file_number) {
     }
   }
 
+  // Apply PBCs to positions
+
   for (int i=0; i<npart; ++i)
   {
     ReadConf >> x[i] >> y[i] >> z[i];
@@ -201,15 +221,15 @@ void Input(int equilibration, std::string input, int file_number) {
     }
   }
   
-//Evaluate properties of the initial configuration
+  // Evaluate properties of the initial configuration
   Measure();
 
-//Print initial values for measured properties
-  cout << "Initial potential energy = " << walker[iv]/(double)npart << endl;
+  // Print initial values for measured properties
+  cout << "Initial potential energy = " << walker[iv] / (double)npart << endl;
   cout << "Initial temperature      = " << walker[it] << endl;
-  cout << "Initial kinetic energy   = " << walker[ik]/(double)npart << endl;
-  cout << "Initial total energy     = " << walker[ie]/(double)npart << endl;
-  cout << "Initial total pressure     = " << walker[iw]<< endl;
+  cout << "Initial kinetic energy   = " << walker[ik] / (double)npart << endl;
+  cout << "Initial total energy     = " << walker[ie] / (double)npart << endl;
+  cout << "Initial total pressure   = " << walker[iw] << endl;
 
   return;
 }
@@ -345,7 +365,7 @@ void Measure() //Properties measurement
   double pij;
   double dx, dy, dz, dr;
 
-//cycle over pairs of particles
+  // cycle over pairs of particles
   for (int i=0; i<npart-1; ++i)
   {
     for (int j=i+1; j<npart; ++j)
@@ -363,73 +383,80 @@ void Measure() //Properties measurement
         vij = 1.0/pow(dr,12) - 1.0/pow(dr,6);
         v += vij;
         pij = 1.0 / pow(dr, 12) - 0.5 / pow(dr, 6);
-        press += pij;       //poi va fatta la media e moltiplicato per 48
+        press += pij;    
       }
     }          
   }
 
-  for (int i=0; i<npart; ++i) kin += 0.5 * (vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);
+  for (int i=0; i<npart; ++i) kin += 0.5 * (vx[i]*vx[i] + vy[i]*vy[i] + vz[i]*vz[i]);             // Add kinetic energy
 
-  walker[iv] = 4.0 * v; // Potential energy
-  walker[ik] = kin; // Kinetic energy
-  walker[it] = (2.0 / 3.0) * kin/(double)npart; // Temperature
-  walker[ie] = 4.0 * v + kin;  // Total energy;
-  walker[iw] = walker[it] * rho + 48 / (3 * vol) * press; //pressure
+  walker[iv] = 4.0 * v;                                                                           // Potential energy
+  walker[ik] = kin;                                                                               // Kinetic energy
+  walker[it] = (2.0 / 3.0) * kin/(double)npart;                                                   // Temperature
+  walker[ie] = 4.0 * v + kin;                                                                     // Total energy;
+  walker[iw] = walker[it] * rho + 48 / (3 * vol) * press;                                         // pressure
 
   return;
 }
 
+void Reset(int iblk){
 
-void Reset(int iblk) //Reset block averages
-{
-   
-   if(iblk == 1)
-   {
-       for(int i=0; i<n_props; ++i)
-       {
-           glob_av[i] = 0;
-           glob_av2[i] = 0;
-       }
-   }
+  /*
+  Reset block averages
+  */
 
-   for(int i=0; i<n_props; ++i)
-   {
-     blk_av[i] = 0;
-   }
-   blk_norm = 0;
-   attempted = 0;
-   accepted = 0;
+  if (iblk == 1)
+  {
+    for (int i = 0; i < m_props; ++i)
+    {
+      glob_av[i] = 0;
+      glob_av2[i] = 0;
+    }
+  }
+
+  for (int i = 0; i < n_props; ++i)                                                               // For the Gr we will use m_props
+  {
+    blk_av[i] = 0;
+  }
+  blk_norm = 0;
+  attempted = 0;
+  accepted = 0;
 }
 
+void Accumulate(void){
 
-void Accumulate(void) //Update block averages
-{
+  /*
+  Update block averages
+  */
 
-   for(int i=0; i<n_props; ++i)
-   {
-     blk_av[i] = blk_av[i] + walker[i];
-   }
-   blk_norm = blk_norm + 1.0;
+  for (int i = 0; i < n_props; ++i)
+  {
+    blk_av[i] = blk_av[i] + walker[i];
+  }
+  blk_norm = blk_norm + 1.0;
 }
 
+void Averages(int iblk, string input, int equilibration) {
 
-void Averages(int iblk, string input, int equilibration) //Print results for current block
-{
-    
-   ofstream Epot, Ekin, Etot, Temp, Press;
-   const int wd=12;
-    
-    cout << "Block number " << iblk << endl;
-    cout << "Acceptance rate " << accepted/attempted << endl << endl;
+  /*
+  Print results for current block and I/O managment
+  */
 
-    if (equilibration == 1) {
-      input = input + "/Equilibration";       //if we are doing equilibration
-    
-      Epot.open("./" + input + "/output_epot" + std::to_string(temp) + ".dat", ios::app);
-      Ekin.open("./" + input + "/output_ekin" + std::to_string(temp) + ".dat", ios::app);
-      Temp.open("./" + input + "/output_temp" + std::to_string(temp) + ".dat", ios::app);
-      Etot.open("./" + input + "/output_etot" + std::to_string(temp) + ".dat", ios::app);
-      Press.open("./" + input + "/output_press" + std::to_string(temp) + ".dat", ios::app);
+  ofstream Epot, Ekin, Etot, Temp, Press;
+  const int wd = 12;
+
+  cout << "Block number " << iblk << endl;
+  cout << "Acceptance rate " << accepted / attempted << endl << endl;
+
+  if (equilibration == 1)
+  {
+    input = input + "/Equilibration";                                                               // if we are doing equilibration
+
+    Epot.open("./" + input + "/output_epot" + std::to_string(temp) + ".dat", ios::app);
+    Ekin.open("./" + input + "/output_ekin" + std::to_string(temp) + ".dat", ios::app);
+    Temp.open("./" + input + "/output_temp" + std::to_string(temp) + ".dat", ios::app);
+    Etot.open("./" + input + "/output_etot" + std::to_string(temp) + ".dat", ios::app);
+    Press.open("./" + input + "/output_press" + std::to_string(temp) + ".dat", ios::app);
     }
 
     else {
@@ -440,40 +467,40 @@ void Averages(int iblk, string input, int equilibration) //Print results for cur
       Press.open("./" + input + "/output_press.dat", ios::app);
     }
 
-    stima_pot = blk_av[iv]/blk_norm/(double)npart; //Potential energy per particle
+    stima_pot = blk_av[iv]/blk_norm/(double)npart;                                                   // Potential energy per particle
     glob_av[iv] += stima_pot;                      
     glob_av2[iv] += stima_pot*stima_pot;
     err_pot=Error(glob_av[iv],glob_av2[iv],iblk);
     
-    stima_kin = blk_av[ik]/blk_norm/(double)npart; //Kinetic energy
+    stima_kin = blk_av[ik]/blk_norm/(double)npart;                                                   // Kinetic energy
     glob_av[ik] += stima_kin;
     glob_av2[ik] += stima_kin*stima_kin;
     err_kin=Error(glob_av[ik],glob_av2[ik],iblk);
 
-    stima_etot = blk_av[ie]/blk_norm/(double)npart; //Total energy
+    stima_etot = blk_av[ie]/blk_norm/(double)npart;                                                   // Total energy
     glob_av[ie] += stima_etot;
     glob_av2[ie] += stima_etot*stima_etot;
     err_etot=Error(glob_av[ie],glob_av2[ie],iblk);
 
-    stima_temp = blk_av[it]/blk_norm; //Temperature
+    stima_temp = blk_av[it]/blk_norm;                                                                 // Temperature
     glob_av[it] += stima_temp;
     glob_av2[it] += stima_temp*stima_temp;
     err_temp=Error(glob_av[it],glob_av2[it],iblk);
 
-    stima_pres = blk_av[iw] / blk_norm; // Pressure
+    stima_pres = blk_av[iw] / blk_norm;                                                               // Pressure
     glob_av[iw] += stima_pres;
     glob_av2[iw] += stima_pres * stima_pres;
     err_press = Error(glob_av[iw], glob_av2[iw], iblk);
 
     // Potential energy per particle
     Epot << setw(wd) << iblk <<  setw(wd) << stima_pot << setw(wd) << glob_av[iv]/(double)iblk << setw(wd) << err_pot << endl;
-//Kinetic energy
+    // Kinetic energy
     Ekin << setw(wd) << iblk <<  setw(wd) << stima_kin << setw(wd) << glob_av[ik]/(double)iblk << setw(wd) << err_kin << endl;
-//Total energy
+    // Total energy
     Etot << setw(wd) << iblk <<  setw(wd) << stima_etot << setw(wd) << glob_av[ie]/(double)iblk << setw(wd) << err_etot << endl;
-//Temperature
+    // Temperature
     Temp << setw(wd) << iblk <<  setw(wd) << stima_temp << setw(wd) << glob_av[it]/(double)iblk << setw(wd) << err_temp << endl;
-  // Temperature
+    // Pressure
     Press << setw(wd) << iblk << setw(wd) << stima_pres << setw(wd) << glob_av[iw] / (double)iblk << setw(wd) << err_press << endl;
 
     cout << "----------------------------" << endl << endl;
