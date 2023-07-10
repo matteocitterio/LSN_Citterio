@@ -1,5 +1,8 @@
 ## How to use my code
 
+- To compile the code: `make`
+- To clean the folder from '*.o' and '*.exe' files, hit 'make clean'
+
 To launch a simulation, just run `./simulation.sh`. This simple bash script contains:
 
 ``` bash
