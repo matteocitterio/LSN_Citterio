@@ -1,6 +1,7 @@
 ## How to use my code
 
 - To compile the code: `make`
+- To make the `*.sh` files executables, hit `chmod +x NAME_OF_THE_.sh_FILE`
 - To clean the folder from '*.o' and '*.exe' files, hit `make clean`
 
 To launch a simulation, just run `./simulation.sh`. This simple bash script contains:
