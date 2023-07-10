@@ -7,27 +7,36 @@
 using namespace std;
 using namespace arma;
 
-//Parent class used for every basic function
+
 class Functions {
 
+    /*
+    Parent class used for every basic function
+    */
+
     public:
-        virtual double Evaluate (double x) const =0;        //by defining it virtual, we make sure that every child class needs to implement this method
+        virtual double Evaluate (double x) const =0;                                  // by defining it virtual, we make sure that every child class needs to implement this method
         virtual double Evaluate (arma::vec v) const = 0;
 };
 
 //class cosine
 class Cosine: public Functions {
+
+    /*
+    Derived from Functions, it builds a Cosine obj.
+    */
+
     private:
         double m_a;
         double m_b;
         double m_c;
 
     public:
-        Cosine();      //empty constructor
-        Cosine(double a, double b, double c);
-        ~Cosine() {;};  //empty destructor
+        Cosine();                                                                      // Empty constructor
+        Cosine(double a, double b, double c);                                          // Constructor
+        ~Cosine() {;};                                                                 // Empty destructor
 
-        virtual double Evaluate (double x) const {return m_a * cos(m_b * x + m_c);}    //implementation of the virtual method
+        virtual double Evaluate (double x) const {return m_a * cos(m_b * x + m_c);}    // Implementation of the virtual method
 
         void SetA(double a) { m_a = a; }
         void SetB(double b) { m_b = b; }
@@ -37,18 +46,21 @@ class Cosine: public Functions {
         double GetC() { return m_c; }
 };
 
-// class parabola
-class Parabola : public Functions
-{
+class Parabola : public Functions {
+
+    /*
+    Derived from Functions, it builds a Parabola obj.
+    */
+
     private:
         double m_a;
         double m_b;
         double m_c;
 
     public:
-        Parabola(); // empty constructor
-        Parabola(double a, double b, double c);
-        ~Parabola() { ; }; // empty destructor
+        Parabola();                                                                     // Empty constructor
+        Parabola(double a, double b, double c);                                         // Constructor
+        ~Parabola() { ; };                                                              // Empty destructor
 
         virtual double Evaluate(double x) const { return m_a * pow(x,2) + m_b * x + m_c; } // implementation of the virtual method
 
@@ -60,12 +72,15 @@ class Parabola : public Functions
         double GetC() { return m_c; }
 };
 
-//class Hydrogen Ground State
-class HydrogenGS: public Functions 
-{
+class HydrogenGS: public Functions {
+
+    /*
+    Derived from Functions, it builds a Hydrogen Ground State obj.
+    */
+
     public:
-        HydrogenGS(); // empty constructor
-        ~HydrogenGS() { ; }; // empty destructor
+        HydrogenGS();                                                                   // empty constructor
+        ~HydrogenGS() { ; };                                                            // empty destructor
 
         virtual double Evaluate(arma::vec v) const { return pow(m_a0, -3) * exp(-2 * (arma::norm(v,2)) / m_a0) / M_PI; }
         virtual double Evaluate(double x) const
@@ -81,11 +96,15 @@ class HydrogenGS: public Functions
         double m_a0;
 };
 
-class Hydrogen210: public Functions
-{
+class Hydrogen210: public Functions {
+
+    /*
+    Derived from Functions, it builds a Hydrogen Excited State obj.
+    */
+
     public:
-        Hydrogen210();        // empty constructor
-        ~Hydrogen210() { ; }; // empty destructor
+        Hydrogen210();                                                                  // empty constructor
+        ~Hydrogen210() { ; };                                                           // empty destructor
 
         virtual double Evaluate(arma::vec v) const;
         virtual double Evaluate(double v) const {
