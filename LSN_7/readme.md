@@ -10,8 +10,6 @@ To run a simulation with my code make sure that all the executables are updated,
 It takes as input the Phase name, i.e one between `Gas`, `Liquid`, `Solid`. If you want to change other parameters of the simulation:
 
 ```
-#!/bin/sh#!/bin/bash
-
 vi input.PHASE_NAME
 ```
 and change the desired parameters.
