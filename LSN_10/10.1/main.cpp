@@ -13,16 +13,16 @@ int main(int argc, char *argv[]){
 
     //MPI initialization
     int size, rank;
-    MPI_Init(&argc, &argv);                    // Initialization
-    MPI_Comm_size(MPI_COMM_WORLD, &size);      // Get size
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);      // Get current rank
-    MPI_Status status;                         // Communications status
+    MPI_Init(&argc, &argv);                                                         // Initialization
+    MPI_Comm_size(MPI_COMM_WORLD, &size);                                           // Get size
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);                                           // Get current rank
+    MPI_Status status;                                                              // Communications status
 
-    double Tstart = MPI_Wtime();
+    double Tstart = MPI_Wtime();                                                    // Keeps track of the computational time
 
     //Settings for the Random generator class
     Random* rnd = new Random();
-    rnd -> RandomRoutineParallel(rank);                     // Random settings including seed etc
+    rnd -> RandomRoutineParallel(rank);                                             // Random settings including seed etc
 
     //Define all the variables and parameters
     ifstream ReadInput;
@@ -31,19 +31,20 @@ int main(int argc, char *argv[]){
 
     //Read input parameters for the algorithm
     ReadInput.open("input.in");
-    ReadInput >> CircleSquare;                  // Put the cities on a circle or on a square
-    ReadInput >> M;                             // Number of chromosomes, i.e. number of initial solutions
-    ReadInput >> NumberOfGenerations;           // Number of generations
-    ReadInput >> probSwapMutation;              // probability of performing a SWAP mutation
-    ReadInput >> probShiftMutation;             // probability of performing a SHIFT mutation
-    ReadInput >> probPermutationMutation;       // probability of performing a PERMUTATION mutation
-    ReadInput >> probInversionMutation;         // probability of performing a INVERSION mutation
-    ReadInput >> probCrossover;                 // probability of performing a CROSSOVER
-    ReadInput >> p;                             // Exponenent of the loaded die
-    ReadInput >> NMigr;                         // Number of migrations per continent in parallel computing
+    ReadInput >> CircleSquare;                                                      // Put the cities on a circle or on a square
+    ReadInput >> M;                                                                 // Number of chromosomes, i.e. number of initial solutions
+    ReadInput >> NumberOfGenerations;                                               // Number of generations
+    ReadInput >> probSwapMutation;                                                  // probability of performing a SWAP mutation
+    ReadInput >> probShiftMutation;                                                 // probability of performing a SHIFT mutation
+    ReadInput >> probPermutationMutation;                                           // probability of performing a PERMUTATION mutation
+    ReadInput >> probInversionMutation;                                             // probability of performing a INVERSION mutation
+    ReadInput >> probCrossover;                                                     // probability of performing a CROSSOVER
+    ReadInput >> p;                                                                 // Exponenent of the loaded die
+    ReadInput >> NMigr;                                                             // Number of migrations per continent in parallel computing
 
-    if (rank == 0){
+    if (rank == 0){                                                                 // Print out only for the first node
 
+        // User friendly messages
         cout << "\nProbability of CROSSOVER: " << probCrossover * 100 << "%" << endl;
         cout << "Probability of SWAP mutation: " << probSwapMutation * 100 << "%" << endl;
         cout << "Probability of SHIFT mutation: " << probShiftMutation * 100 << "%" << endl;
@@ -59,29 +60,32 @@ int main(int argc, char *argv[]){
     // GA constructor
     GeneticAlgorithm *GA = new GeneticAlgorithm(rnd,CircleSquare, NumberOfGenerations, M, probSwapMutation, probShiftMutation, probPermutationMutation, probInversionMutation, probCrossover, p);
 
+    // GA initialization
     cout << "\nRANK: "<<rank<<" Initializing population and cities..";
     GA->Start();
     cout << "RANK: " << rank << " DONE initialize" << endl;
 
-    MPI_Barrier(MPI_COMM_WORLD);                // Wait for all the processes to initialize
+    MPI_Barrier(MPI_COMM_WORLD);                                                    // Wait for all the processes to initialize
 
-    if (size == 1){
+    if (size == 1){                                                                 // If only one node is given, there is no need for message passing
+
         cout << "Serial" << endl;
-        GA->Evolve();
+        GA->Evolve();                                                               // GA evolution
         cout << "Done evolving" << endl;
     }
-    else{
+    else{                                                                           // MPI needed
+
         cout << "RANK: " << rank << " Evolve" << endl;
-        GA->ParallelEvolve(NMigr, MPI_COMM_WORLD, rank, size, status);
+        GA->ParallelEvolve(NMigr, MPI_COMM_WORLD, rank, size, status);              // GA evolution with message passing
         cout << "RANK: " << rank << " DONE evolving" << endl;
     }
 
     rnd->SaveSeed();
 
-    double Tout = MPI_Wtime();
+    double Tout = MPI_Wtime();                                                      // Print out computational time
     double DeltaT = Tout-Tstart;
     cout << "Time: " << DeltaT;
 
-    MPI_Finalize();                             // MPI finilization
+    MPI_Finalize();                                                                 // MPI finilization
     return 0;
 }
