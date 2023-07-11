@@ -12,30 +12,37 @@ using namespace arma;
 //forward declaration to avoid circular dependency between header files
 class Random;
 
-//Parent class used for every basic function
 class Functions {
 
+    /*
+    Parent class used for every basic function
+    */
+
     public:
-        virtual double Evaluate (double x) const =0;        //by defining it virtual, we make sure that every child class needs to implement this method
+        virtual double Evaluate (double x) const =0;                                  // By defining it virtual, we make sure that every child class needs to implement this method
         virtual double Evaluate (arma::vec v) const = 0;
 };
 
 class TrialWaveFunction: public Functions {
 
+    /*
+    Derived from functions, it build a trial wave function obj used for the Variational montecarlo code.
+    */
+
     public: 
-        TrialWaveFunction(Random *rnd);        //empty constructor
-        ~TrialWaveFunction() {;};   //empty destructor
+        TrialWaveFunction(Random *rnd);                                               // empty constructor
+        ~TrialWaveFunction() {;};                                                     // empty destructor
 
         virtual double Evaluate(arma::vec v) const
         {
             cout << "This WF is for a 1D model, hence it works with doubles not vectors. There is something wrong" << endl;
             return 0;
         };
-        virtual double Evaluate(double x) const;
-        double EvaluateNoModulus(double x) const;
-        double SecondDerivative(double x) const;
-        void MetropolisUniform();
-        void Equilibrate(int nblocks, int L);
+        virtual double Evaluate(double x) const;                                      // Evaluation method
+        double EvaluateNoModulus(double x) const;                                     // Evaluation without modulus
+        double SecondDerivative(double x) const;                                      // Second derivative
+        void MetropolisUniform();                                                     // Metropolis update with the trial wave function 
+        void Equilibrate(int nblocks, int L);                                         // Equilibration needed for metropolis
         
         void Set_Mu(double mu) {m_mu = mu;}
         void Set_Sigma (double sigma) {m_sigma = sigma;}
@@ -52,15 +59,19 @@ class TrialWaveFunction: public Functions {
 
 class DoubleDwellPotential: public Functions {
 
-    public:
-        DoubleDwellPotential();        //empty constructor
-        ~DoubleDwellPotential() {;};   //empty destructor
+    /*
+    Derived from FUnctions, it build a dwell-shape potential obj.
+    */
 
-        virtual double Evaluate(arma::vec v) const{
+    public:
+        DoubleDwellPotential();                                                       // empty constructor
+        ~DoubleDwellPotential() {;};                                                  // empty destructor
+
+        virtual double Evaluate(arma::vec v) const{                                   // Evaluation method
             cout << "The potential is 1D, please give a 1D INPUT, not a VECTOR" << endl;
             return 0;
         };
-        virtual double Evaluate(double x) const;
+        virtual double Evaluate(double x) const;                                      // Evaluation method
         void SetCoeffs(arma::vec coeff);
 
     private:
