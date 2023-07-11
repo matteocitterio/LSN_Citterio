@@ -12,9 +12,9 @@ Chromosome::Chromosome(Random *rnd){
     Constructor
     */
 
-    m_rnd = rnd;                                        // Set the random generator
-    m_N= 100;                                            // Fixed number of cities
-    m_initialcity = 1;                                  // Initial city
+    m_rnd = rnd;                                                                    // Set the random generator
+    m_N= 100;                                                                       // Fixed number of cities
+    m_initialcity = 1;                                                              // Initial city
 
 }
 
@@ -76,8 +76,8 @@ arma::vec Chromosome::NewChromosome(){
     /*
     Creates a new random chromosome which fullfills the given constraints, mainly used for generated the first generation
     */
-    arma::vec chromosome = arma::linspace(1,m_N+1, m_N+1);          // Creates a vector of integers of length: number of cities+1, right now the cities are ordered i.e. [1,2,3,..]
-    chromosome.back() = m_initialcity;                              // This sets the last city as the first one: round trip constraint
+    arma::vec chromosome = arma::linspace(1,m_N+1, m_N+1);                          // Creates a vector of integers of length: number of cities+1, right now the cities are ordered i.e. [1,2,3,..]
+    chromosome.back() = m_initialcity;                                              // This sets the last city as the first one: round trip constraint
 
     //Shuffles a subvector of our chromosome:
     chromosome.subvec(1, chromosome.size() - 2) = arma::shuffle(chromosome.subvec(1, chromosome.size() - 2));
@@ -97,19 +97,19 @@ Generation::Generation(Random *rnd, int M, double probSwapMutation, double probS
     Constructor
     */
 
-    m_rnd = rnd;                                                        // set the random generator
-    m_M = M;                                                            // size of the gene pool
-    m_p = p;                                                            // exponent of the loaded die used in the selection operator
-    m_chromo = new Chromosome(rnd);                                     // m_rnd is already a pointer
-    m_gene_pool = arma::mat(m_M, m_chromo->GetNumberOfGenes());         // Create the gene pool
-    m_cities = arma::mat(m_chromo->GetNumberOfGenes() -1, 2);           // Contains the coordinates of the cities
-    m_fitness = arma::mat(m_M,1);                                       // Contains the fitness of each chromosome
+    m_rnd = rnd;                                                                    // set the random generator
+    m_M = M;                                                                        // size of the gene pool
+    m_p = p;                                                                        // exponent of the loaded die used in the selection operator
+    m_chromo = new Chromosome(rnd);                                                 // m_rnd is already a pointer
+    m_gene_pool = arma::mat(m_M, m_chromo->GetNumberOfGenes());                     // Create the gene pool
+    m_cities = arma::mat(m_chromo->GetNumberOfGenes() -1, 2);                       // Contains the coordinates of the cities
+    m_fitness = arma::mat(m_M,1);                                                   // Contains the fitness of each chromosome
 
-    m_prob_swap_mutation = probSwapMutation;                            // Mutation probabilities
+    m_prob_swap_mutation = probSwapMutation;                                        // Mutation probabilities
     m_prob_shift_mutation = probShiftMutation;
     m_prob_permutation_mutation = probPermutationMutation;
     m_prob_inversion_mutation = probInversionMutation;
-    m_prob_crossover = probCrossover;                                   // crossoover probability
+    m_prob_crossover = probCrossover;                                               // crossoover probability
 }
 
 void Generation::CreateInitialPopulation(){
@@ -143,7 +143,7 @@ void Generation::Sort(){
     Sort the gene pool and fitness matrix according to the fitness of each chromosome in descending order
     */
 
-    arma::uvec sorted_indices = arma::sort_index(m_fitness.col(0));         // Sort based on the cost function in m_fitness
+    arma::uvec sorted_indices = arma::sort_index(m_fitness.col(0));                 // Sort based on the cost function in m_fitness
 
     // Apply the sorted indices to m_gene_pool and m_fitness
     m_gene_pool = m_gene_pool.rows(sorted_indices);
@@ -204,7 +204,6 @@ void Generation::AmericanCities(){
     for (int i = 0; i < m_cities.n_rows; i++)
     {
         Cities >> longitude >> latitude;
-        //cout << longitude << " "<< latitude <<endl;
         m_cities(i, 0) = longitude;
         m_cities(i, 1) = latitude;
     }
@@ -224,13 +223,13 @@ void Generation::Mutations(int index){
 
     */
 
-    int m;                                                  // number of elements to be permuted
-    int start1;                                             // index of the first m contiguous elements to be permuted
+    int m;                                                                          // number of elements to be permuted
+    int start1;                                                                     // index of the first m contiguous elements to be permuted
     int start2;
-    int n;                                                  // number of positions to be shifted
-    int start;                                              // first one to be shifted
+    int n;                                                                          // number of positions to be shifted
+    int start;                                                                      // first one to be shifted
 
-    int reducedSize = m_chromo->GetNumberOfGenes() - 2;     // The effective size of genes that can be changed, the first and last gene must be left unchanged
+    int reducedSize = m_chromo->GetNumberOfGenes() - 2;                             // The effective size of genes that can be changed, the first and last gene must be left unchanged
 
     /*=========================================================================================================================*/
     //SWAP MUTATION
@@ -252,8 +251,8 @@ void Generation::Mutations(int index){
     // SHIFT MUTATION
     if (m_rnd->Rannyu() <= m_prob_shift_mutation){
 
-        start = int(m_rnd->Rannyu(0, reducedSize - 2));     // \in [0, L-2] as it is an index and starting from last position makes no sense
-        n = int(m_rnd->Rannyu(1, reducedSize - start));     // \in [1,L-start]
+        start = int(m_rnd->Rannyu(0, reducedSize - 2));                             // \in [0, L-2] as it is an index and starting from last position makes no sense
+        n = int(m_rnd->Rannyu(1, reducedSize - start));                             // \in [1,L-start]
 
         if (reducedSize - (start + n) > 0){
 
@@ -323,8 +322,8 @@ void Generation::Mutations(int index){
     // INVERSION MUTATION
     if (m_rnd->Rannyu() <= m_prob_inversion_mutation){
 
-        start1 = int(m_rnd->Rannyu(1, reducedSize +1 -1));          // \in [1, L -1] as it is an index and starting from last position makes no sense where L is the reduced one
-        m = int(m_rnd->Rannyu(1, reducedSize - start1));            // Number od cities to invert
+        start1 = int(m_rnd->Rannyu(1, reducedSize +1 -1));                          // \in [1, L -1] as it is an index and starting from last position makes no sense where L is the reduced one
+        m = int(m_rnd->Rannyu(1, reducedSize - start1));                            // Number od cities to invert
 
         // auxiliary arrays
         arma::vec temp = m_new_gen.row(index).t();
@@ -342,8 +341,8 @@ void Generation::CrossOver(){
     CrossOver operator
     */
 
-    int momIndex;                                                   // Index of the mother chromosome in the gene pool
-    int dadIndex;                                                   // Index of the father chromosome in the gene pool
+    int momIndex;                                                                   // Index of the mother chromosome in the gene pool
+    int dadIndex;                                                                   // Index of the father chromosome in the gene pool
     int cutPosition;                                                
     int reducedSize = m_chromo->GetNumberOfGenes() - 2;
 
@@ -352,12 +351,12 @@ void Generation::CrossOver(){
 
     for (int k = 0; k < int(m_M/2); k+=2) {
 
-        momIndex = Selection();                                     // Selects two parents with the loaded die (they could be the same, weird :D)
+        momIndex = Selection();                                                     // Selects two parents with the loaded die (they could be the same, weird :D)
         dadIndex = Selection();
 
         if (m_rnd->Rannyu() <= m_prob_crossover){
 
-            cutPosition = int(m_rnd->Rannyu(1, reducedSize +1 -1)); // \in [1, L-1]
+            cutPosition = int(m_rnd->Rannyu(1, reducedSize +1 -1));                 // \in [1, L-1]
 
             //auxiliary vectors
             arma::vec tempMom = m_gene_pool.row(momIndex).t();
@@ -495,20 +494,20 @@ void GeneticAlgorithm::Evolve(){
     Updates the generations for NumberOfGeneration times
     */
 
-    ofstream Results, Path, Loss;                               // I/O files
-    Results.open("resultsSquare.txt");                          // Best half data
-    Path.open("pathsSquaretxt");                                // optimal solution path data
-    Loss.open("optimumLossSquare.txt");                         // fitness of the optimal solution per generation
+    ofstream Results, Path, Loss;                                                   // I/O files
+    Results.open("resultsSquare.txt");                                              // Best half data
+    Path.open("pathsSquaretxt");                                                    // optimal solution path data
+    Loss.open("optimumLossSquare.txt");                                             // fitness of the optimal solution per generation
 
     for (int i=0; i < m_NumberOfGenerations; i++){
 
         std::cout << "Progress: [" << i << "/" << m_NumberOfGenerations << "]";
         std::cout.flush();
 
-        m_gen->CrossOver();                                     // This makes crossover and mutations all at once
+        m_gen->CrossOver();                                                         // This makes crossover and mutations all at once
 
-        Results << m_gen->bestHalfAverage() << endl;            // Save the best half measurements
-        Loss << i << " " << m_gen->GetOptimumLoss()<<endl;      // Save the optimal solution measurements
+        Results << m_gen->bestHalfAverage() << endl;                                // Save the best half measurements
+        Loss << i << " " << m_gen->GetOptimumLoss()<<endl;                          // Save the optimal solution measurements
 
         // Every 25 generations save the optimal solution path
         if (i%25==0){
@@ -518,12 +517,12 @@ void GeneticAlgorithm::Evolve(){
             }
         }
 
-        for (int j = 0; j < 25; ++j)                            // Move the cursor back
+        for (int j = 0; j < 25; ++j)                                                // Move the cursor back
         {
             std::cout << '\b';
         }
     }
-    Results.close();                                            // Close I/O files
+    Results.close();                                                                // Close I/O files
     Path.close();
     Loss.close();
         
@@ -535,17 +534,17 @@ void GeneticAlgorithm::ParallelEvolve(int NMigr, MPI_Comm comm, int rank, int si
     Updates the generations for NumberOfGeneration times with MPI support for parallelization
     */
 
-    ofstream Results, Path, Loss;                           // I/O files
-    int giver, receiver, tag;                               // Used for MPI message passing
-    int data[m_gen->GetNumberOfGenes()];                    // data to exchange
+    ofstream Results, Path, Loss;                                                   // I/O files
+    int giver, receiver, tag;                                                       // Used for MPI message passing
+    int data[m_gen->GetNumberOfGenes()];                                            // data to exchange
     string folderRank = to_string(size)+"_indep_100/";
     string rankstring = "RANK_"+to_string(rank)+".txt";
 
-    arma::vec dataToMigrate;                                           // Auxiliary vector used for data exchange
-    Results.open(folderRank+"resultsSquare"+rankstring);               // Best half data
+    arma::vec dataToMigrate;                                                        // Auxiliary vector used for data exchange
+    Results.open(folderRank+"resultsSquare"+rankstring);                            // Best half data
     cout << folderRank+"resultsSquare"+rankstring << endl; 
-    Path.open(folderRank+"pathsSquare"+rankstring);                    // optimal solution path data
-    Loss.open(folderRank+"optimumLossSquare"+rankstring);              // fitness of the optimal solution per generation
+    Path.open(folderRank+"pathsSquare"+rankstring);                                 // optimal solution path data
+    Loss.open(folderRank+"optimumLossSquare"+rankstring);                           // fitness of the optimal solution per generation
 
     for (int i = 0; i < m_NumberOfGenerations; i++)
     {
@@ -609,20 +608,20 @@ void GeneticAlgorithm::ParallelEvolve(int NMigr, MPI_Comm comm, int rank, int si
             
         }
 
-        m_gen->CrossOver(); // This makes crossover and mutations all at once
+        m_gen->CrossOver();                                                         // This makes crossover and mutations all at once
 
-        Results << m_gen->bestHalfAverage() << endl;         // Save the best half measurements
-        Loss << i << " " << m_gen->GetOptimumLoss() << endl; // Save the optimal solution measurements
+        Results << m_gen->bestHalfAverage() << endl;                                // Save the best half measurements
+        Loss << i << " " << m_gen->GetOptimumLoss() << endl;                        // Save the optimal solution measurements
 
         if (rank == 0){
-            for (int j = 0; j < 25; ++j) // Move the cursor back
+            for (int j = 0; j < 25; ++j)                                            // Move the cursor back
             {
                 std::cout << '\b';
             }
         }
         
     }
-    Results.close(); // Close I/O files
+    Results.close();                                                                // Close I/O files
     Path.close();
     Loss.close();
 }
@@ -634,17 +633,17 @@ void GeneticAlgorithm::Start(){
     */
 
     if (m_circlesquare==1){
-        m_gen->CitiesOnASquare();                           // If you want them distributed over a square
+        m_gen->CitiesOnASquare();                                                   // If you want them distributed over a square
     }
     else if (m_circlesquare==0) {
-        m_gen->CitiesOnACircle();                           // '' over a circle
+        m_gen->CitiesOnACircle();                                                   // '' over a circle
     }
     else {
-        m_gen->AmericanCities();                            // read american capitals
+        m_gen->AmericanCities();                                                    // read american capitals
     }
 
-    m_gen->CreateInitialPopulation();                       // Creates the initial chromosome population
-    m_gen->Sort();                                          // Sorts the chromosomes according to path length
+    m_gen->CreateInitialPopulation();                                               // Creates the initial chromosome population
+    m_gen->Sort();                                                                  // Sorts the chromosomes according to path length
 
 }
 
