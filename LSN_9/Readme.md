@@ -1,4 +1,4 @@
-Commands:
+## How to use my code
 
 - `make run` compile and run the program
 - `make` compile the program
