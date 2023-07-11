@@ -1,5 +1,7 @@
 ## How to use my code
 
+The following code makes use of MPI, message passing interface for parallel coding; the following guidelines apply:
+
 - To compile my code, simply hit `make`.
 - To change settings and parameters: `vi input.in`. There are comments that will guide you to change the desidered parameters.
 - To run the GA search with a single node: `mpiexec -np 1 ./main.exe`.
