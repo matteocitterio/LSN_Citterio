@@ -1,4 +1,4 @@
-# How to use my code
+## How to use my code
 
 - To compile my code, simply hit `make`.
 - To change settings and parameters: `vi input.in`. There are comments that will guide you to change the desidered parameters.
